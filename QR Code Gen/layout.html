@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>QR Code Generator</title>
+        <script>
+            function generateQRCode(value){
+                let formData = new FormData();
+                formData.append('data', value);
+                fetch('http://localhost:5000/gen_qrcode', {
+                    method: 'POST',
+                    body: formData
+                }).then((res) => {
+                    res.body.getReader().read().then((img) =>{
+                        let imageByteArray = img.value;
+                        let StringValue = String.fromCharCode(...imageByteArray);
+                        let encodedValue = btoa(StringValue); 
+                        document.getElementById('qrcode').src = 'data:image/png;base64,${encodedValue}'
+                    })
+                })
+            }
+        </script>
+    </head>
+    <body>
+        <div>
+            <label>Enter Link Here: </label>
+            <input name="qrcode" type="text" onchange="generateQRCode(this.value)">
+        </div>
+        
+        <img id="qrcode-img">
+
+    </body>
+</html>
